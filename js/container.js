@@ -11,8 +11,8 @@ const teamData = [
         "image": "images/team/2.webp"
     },
     {
-        "name": "Carlos Rivera",
-        "title": "Founder & CEO, NeuralCore",
+        "name": "Uğur Rivera",
+        "title": "Founder & CEO, Devnot",
         "image": "images/team/3.webp"
     },
     {
@@ -110,7 +110,7 @@ const tickets = [
     }
 ];
 
-const file = 'video/1.mp4'; // burada tek dosyanın adını yaz (örn. background.jpg)
+const file = 'video/4.mp4'; // burada tek dosyanın adını yaz (örn. background.jpg)
 const section = document.getElementById('section-hero');
 
 if (file.endsWith('.mp4') || file.endsWith('.webm')) {
