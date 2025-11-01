@@ -40,6 +40,10 @@
   width: 100%;
   padding: 0px 2px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 .countdown-show1 .countdown-section {
   width: 98%;
@@ -115,7 +119,17 @@
 }
 
 .countdown-s2{
-  display:inline-block;
+ 
+}
+.countdown-p2{
+  text-align: center;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 
 .countdown-s2 .countdown-show4 .countdown-section {
