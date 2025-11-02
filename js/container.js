@@ -3,22 +3,22 @@ const teamData = [
     {
         "name": "Joshua Henry",
         "title": "Chief AI Scientist, OpenAI",
-        "image": "images/team/1.webp"
+        "image": "images/speakers/alper-hankendi.jpg"
     },
     {
         "name": "Leila Zhang",
         "title": "VP of Machine Learning, Google",
-        "image": "images/team/2.webp"
+        "image": "images/speakers/emre-toptanci.jpg"
     },
     {
         "name": "Uğur Rivera",
         "title": "Founder & CEO, Devnot",
-        "image": "images/team/3.webp"
+        "image": "images/speakers/lemi-orhan-ergin.jpg"
     },
     {
         "name": "Sofia Kim",
         "title": "CTO, QuantumLeap",
-        "image": "images/team/4.webp"
+        "image": "images/speakers/ugur-umutluoglu.jpg"
     }
 ];
 
