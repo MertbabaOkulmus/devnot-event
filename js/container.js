@@ -73,9 +73,9 @@ const scheduleData = [
 
 const tickets = [
     {
-        name: "Standard",
-        price: "$299",
-        date: "October 1 to 5 - 10:00 AM",
+        name: "Early Bird",
+        price: "15.000 ₺",
+        date: "Until December 31",
         className: "",
         benefits: [
             "Access to keynotes and sessions.",
@@ -85,27 +85,15 @@ const tickets = [
         ]
     },
     {
-        name: "VIP",
-        price: "$699",
-        date: "October 1 to 5 - 10:00 AM",
+        name: "Standart",
+        price: "17.500 ₺",
+        date: "Until March 31",
         className: "",
         benefits: [
             "All Standard benefits.",
             "VIP lounge access and exclusive events.",
             "Front-row seating and priority workshop access.",
             "VIP swag bag and exclusive content."
-        ]
-    },
-    {
-        name: "Full Access",
-        price: "$1199",
-        date: "October 1 to 5 - 10:00 AM",
-        className: "s2",
-        benefits: [
-            "All VIP benefits.",
-            "Access to all workshops and breakout sessions.",
-            "Personalized session scheduling.",
-            "Speaker meet-and-greet and after-party access."
         ]
     }
 ];
@@ -187,7 +175,7 @@ tickets.forEach(ticket => {
     <div class="item">
       <div class="d-ticket ${ticket.className}">
         <img src="images/logo.webp" class="w-80px mb-4" alt="">
-        <img src="images/misc/barcode.webp" class="w-20 p-2 abs abs-middle end-0 me-2" alt="">
+        
         <img src="images/logo-big-white.webp" class="w-40 abs abs-centered me-4 op-2" alt="">
         <h2>${ticket.name}</h2>
         <h4 class="mb-4">${ticket.price}</h4>
