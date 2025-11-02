@@ -73,27 +73,36 @@ const scheduleData = [
 
 const tickets = [
     {
-        name: "Early Bird",
+        name: "Early Bird Ticket",
         price: "15.000 ₺",
-        date: "Until December 31",
-        className: "",
+        date: "Until December 31, 2025",
+        className: "s2",
         benefits: [
-            "Access to keynotes and sessions.",
-            "Admission to exhibitions and demos.",
+            "Access to sessions and panels.",
             "Networking opportunities.",
-            "Digital materials and session recordings."
+            "All-day snacks and buffet lunch"
         ]
     },
     {
-        name: "Standart",
+        name: "Standart Ticket",
         price: "17.500 ₺",
         date: "Until March 31",
         className: "",
         benefits: [
-            "All Standard benefits.",
-            "VIP lounge access and exclusive events.",
-            "Front-row seating and priority workshop access.",
-            "VIP swag bag and exclusive content."
+            "Access to sessions and panels.",
+            "Networking opportunities.",
+            "All-day snacks and buffet lunch"
+        ]
+    },
+    {
+        name: "Last Tickets",
+        price: "19.500 ₺",
+        date: "Starting from April 1, 2026",
+        className: "",
+        benefits: [
+            "Access to sessions and panels.",
+            "Networking opportunities.",
+            "All-day snacks and buffet lunch"
         ]
     }
 ];
@@ -111,28 +120,33 @@ else {
 }
 
 
-const container = document.getElementById('team-container');
+try {
+  const container = document.getElementById('team-container');
 
-teamData.forEach(member => {
-    const cardHTML = `
-    <div class="team-card">
-      <div class="card-inner">
-        <img src="${member.image}" alt="${member.name}">
-        <div class="card-info">
-          <h3>${member.name}</h3>
-          <span>${member.title}</span>
+  teamData.forEach(member => {
+      const cardHTML = `
+      <div class="team-card">
+        <div class="card-inner">
+          <img src="${member.image}" alt="${member.name}">
+          <div class="card-info">
+            <h3>${member.name}</h3>
+            <span>${member.title}</span>
+          </div>
         </div>
       </div>
-    </div>
-  `;
-    container.insertAdjacentHTML('beforeend', cardHTML);
-});
+    `;
+      container.insertAdjacentHTML('beforeend', cardHTML);
+  });
+
+} catch (error) {
+  
+}
 
 
+try {
+  const scheduleContainer = document.getElementById("schedule-container");
 
-const scheduleContainer = document.getElementById("schedule-container");
-
-scheduleData.forEach(day => {
+  scheduleData.forEach(day => {
     let dayHTML = `<li>`;
 
     day.sessions.forEach(session => {
@@ -163,10 +177,15 @@ scheduleData.forEach(day => {
     dayHTML += `</li>`;
     scheduleContainer.insertAdjacentHTML("beforeend", dayHTML);
 });
+} catch (error) {
+  
+}
 
-const ticketContainer = document.getElementById("ticket-container");
 
-tickets.forEach(ticket => {
+try {
+  const ticketContainer = document.getElementById("ticket-container");
+
+  tickets.forEach(ticket => {
     const benefitsHTML = ticket.benefits
         .map(item => `<li>${item}</li>`)
         .join("");
@@ -174,9 +193,7 @@ tickets.forEach(ticket => {
     const ticketHTML = `
     <div class="item">
       <div class="d-ticket ${ticket.className}">
-        <img src="images/logo.webp" class="w-80px mb-4" alt="">
-        
-        <img src="images/logo-big-white.webp" class="w-40 abs abs-centered me-4 op-2" alt="">
+        <img src="images/devnot-logo-2.png" class="w-90px mb-4" alt="">
         <h2>${ticket.name}</h2>
         <h4 class="mb-4">${ticket.price}</h4>
         <div class="fs-14">${ticket.date}</div>
@@ -195,3 +212,9 @@ tickets.forEach(ticket => {
 
     ticketContainer.insertAdjacentHTML("beforeend", ticketHTML);
 });
+} catch (error) {
+  
+}
+
+
+
