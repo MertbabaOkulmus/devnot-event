@@ -1,6 +1,6 @@
 jQuery(document).ready(function() {
         $(function () {
-            $('#defaultCountdown').countdown({until: new Date(2026, 4, 15, 9)}); // year, month, date, hour
+            $('#defaultCountdown').countdown({until: new Date(2026, 3, 15, 9, 0)}); // year, month, date, hour
         });
 });		
 

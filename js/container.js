@@ -78,19 +78,19 @@ const tickets = [
         date: "Until December 31, 2025",
         className: "s2",
         benefits: [
-            "Access to sessions and panels.",
-            "Networking opportunities.",
+            "Access to sessions and panels",
+            "Networking opportunities",
             "All-day snacks and buffet lunch"
         ]
     },
     {
         name: "Standart Ticket",
         price: "17.500 ₺",
-        date: "Until March 31",
+        date: "Until March 31, 2026",
         className: "",
         benefits: [
-            "Access to sessions and panels.",
-            "Networking opportunities.",
+            "Access to sessions and panels",
+            "Networking opportunities",
             "All-day snacks and buffet lunch"
         ]
     },
@@ -100,8 +100,8 @@ const tickets = [
         date: "Starting from April 1, 2026",
         className: "",
         benefits: [
-            "Access to sessions and panels.",
-            "Networking opportunities.",
+            "Access to sessions and panels",
+            "Networking opportunities",
             "All-day snacks and buffet lunch"
         ]
     }
