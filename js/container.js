@@ -205,7 +205,7 @@ try {
             ${benefitsHTML}
           </ul>
         </div>
-        <a class="btn-main fx-slide w-100" href="tickets.html"><span>Buy Ticket</span></a>
+        <a class="btn-main fx-slide w-100" href="https://kommunity.com/devnot/events/tech-leaders-summit-2026-3d56d761/tickets/" target="_blank"><span>Buy Ticket</span></a>
       </div>
     </div>
   `;
