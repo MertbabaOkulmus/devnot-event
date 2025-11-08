@@ -115,9 +115,7 @@
                     </div>
 
                     <div class="col-lg-5">
-                        <div class="wow scaleIn">
-                            <img src="images/misc/rotate-image2.png" class="w-100 rotate-animation" alt="">
-                        </div>
+                        <div class="sliderx" id="sliderx"></div>
                     </div>
 
                 </div>
@@ -486,7 +484,7 @@
 
     @media (max-width: 767.98px) {
         .mayis {
-              display: flex;
+            display: flex;
             flex-direction: column;
             flex-wrap: wrap;
             align-items: center;
@@ -497,6 +495,7 @@
             text-align: center;
             white-space: normal;
         }
+
         .col-lg-4.col-md-6.mb-sm-30 {
             display: flex;
             flex-direction: column;
@@ -549,6 +548,49 @@
         .col-lg-4.col-md-6.mb-sm-30 .ms-3 p {
             overflow-wrap: anywhere;
             word-break: break-word;
+        }
+    }
+
+    .sliderx {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 2 / 1;
+        /* genişlik / yükseklik oranı */
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        margin: 0 auto;
+        margin-bottom: 16px;
+    }
+
+    .sliderx .slidex {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    .sliderx .slidex.active {
+        opacity: 1;
+    }
+
+    /* ---- Mobil uyumluluk ---- */
+    @media (max-width: 768px) {
+        .sliderx {
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+            aspect-ratio: 16 / 9;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .sliderx {
+            border-radius: 10px;
+            aspect-ratio: 4 / 3;
+            box-shadow: none;
         }
     }
 </style>
