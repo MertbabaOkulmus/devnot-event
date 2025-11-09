@@ -108,10 +108,12 @@ const tickets = [
 ];
 
 const sliderImages = [
-  { src: "https://picsum.photos/id/1015/800/400" },
-  { src: "https://picsum.photos/id/1016/800/400" },
-  { src: "https://picsum.photos/id/1018/800/400" },
-  { src: "https://picsum.photos/id/1020/800/400" }
+  { src: "images/slider/tls2025-1.jpg" },
+  { src: "images/slider/tls2025-2.jpg" },
+  { src: "images/slider/tls2025-3.jpg" },
+  { src: "images/slider/tls2025-4.jpg" },
+  { src: "images/slider/tls2025-5.jpg" },
+  { src: "images/slider/tls2025-6.jpg" }
 ];
 
 const file = 'video/4.mp4'; // burada tek dosyanın adını yaz (örn. background.jpg)
