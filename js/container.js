@@ -75,7 +75,7 @@ const tickets = [
   {
     name: "Early Bird Ticket",
     price: "15.000 ₺",
-    date: "Until December 31, 2025",
+    date: "Limited Tickets & Until December 22, 2025",
     className: "s2",
     benefits: [
       "Access to sessions and panels",

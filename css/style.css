@@ -11931,7 +11931,7 @@ img {
   position: relative;
   overflow: hidden;
   padding: 30px;
-  background: url('../images/misc/l3.webp');
+  background: url('../images/misc/ticket3.jpg');
   border-radius: var(--rounded-1);
   -moz-border-radius: var(--rounded-1);
   -webkit-border-radius: var(--rounded-1);
@@ -11940,10 +11940,10 @@ img {
   box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 1);
 }
 .d-ticket.s2{
-  background: url('../images/misc/l4.webp');
+  background: url('../images/misc/ticket1.jpg');
 }
 .d-ticket.s3{
-  background: url('../images/misc/l5.webp');
+  background: url('../images/misc/ticket3.jpg');
 }
 .d-ticket h2{
   font-size: 36px;
