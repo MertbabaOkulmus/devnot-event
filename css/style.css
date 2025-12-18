@@ -4094,7 +4094,6 @@ h5 span.label {
   background: -moz-linear-gradient(var(--gradient-text));
   background: linear-gradient(var(--gradient-text));
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 
