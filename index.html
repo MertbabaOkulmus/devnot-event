@@ -619,7 +619,8 @@
         transform: translate(-50%, -50%);
         width: min(860px, calc(100% - 32px));
         max-height: calc(100% - 80px);
-        overflow: auto;
+        overflow-y: auto;
+        overflow-x: hidden;
         z-index: 10001;
         display: none;
 
@@ -629,6 +630,10 @@
         box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
         color: #fff;
         padding: 18px 18px 14px;
+
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-y;
     }
 
     .my-schedule-modal .ms-header {
@@ -639,6 +644,11 @@
         padding-bottom: 12px;
         border-bottom: 1px solid rgba(255, 255, 255, .10);
         margin-bottom: 14px;
+
+        position: sticky;
+        top: 0;
+        background: #0f1115;
+        z-index: 2;
     }
 
     .my-schedule-modal .ms-title {
@@ -693,6 +703,7 @@
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, .10);
         background: rgba(255, 255, 255, .03);
+        margin-bottom: 6px;
     }
 
     .my-schedule-item img {
@@ -852,5 +863,134 @@
     .session-add-btn.is-remove:hover {
         border-color: rgba(255, 80, 80, .8);
         background: rgba(255, 80, 80, .08);
+    }
+
+    /* Desktop: Tab nav'ı kaldır, salonları yan yana kolon göster */
+
+    @media (min-width: 992px) {
+        #section-schedule .d-tab-nav {
+            display: none !important;
+        }
+
+        /* Desktop'ta Designesia tab içeriğini gizle (script override etmesin) */
+        #schedule-container {
+            display: none !important;
+        }
+
+        /* Desktop kolon wrapper */
+        #schedule-columns {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        /* Her salon kolon */
+        .schedule-col {
+            display: grid;
+            gap: 16px;
+            flex: 1 1 0;
+            min-width: 320px;
+        }
+
+        /* Kolon başlığı (Salon 1/2/..) */
+        .schedule-col-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin: 0 0 14px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, .12);
+            opacity: .95;
+        }
+    }
+
+    /* Konuşmacı fotoğraflarını kaldır */
+    .my-schedule-item img {
+        display: none !important;
+    }
+
+    /* --- Schedule session card layout (time left, title+name right) --- */
+    .schedule-session {
+        border: 1px solid rgba(255, 255, 255, .10);
+        background: rgba(255, 255, 255, .03);
+        border-radius: 12px;
+        padding: 14px;
+        display: flex;
+        gap: 14px !important;
+        align-items: stretch;
+
+        /* sabit yükseklik: title ~4 satır + name + buton */
+        height: 200px;
+        overflow: hidden;
+    }
+
+    /* soldaki time */
+    .schedule-session .ss-time {
+        flex: 0 0 72px;
+        font-weight: 900;
+        opacity: .95;
+        display: flex;
+        align-items: flex-start;
+        padding-top: 2px;
+    }
+
+    /* sağ blok */
+    .schedule-session .ss-right {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px;
+        min-height: 0;
+    }
+
+    .schedule-session .ss-title {
+        font-weight: 900;
+        line-height: 1.25;
+        margin: 0;
+
+        /* max 4 satır */
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .schedule-session .ss-name {
+        opacity: .85;
+        font-size: 13px;
+        margin: 0;
+    }
+
+    /* buton aşağıda, sağa */
+    .schedule-session .ss-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: auto;
+    }
+
+    @media (max-width: 991px) {
+        .schedule-session {
+            margin-bottom: 16px;
+            padding-bottom: 20px;
+        }
+
+        /* Mobilde kolon container varsa gizle (resize geçişlerinde sorun olmasın) */
+        #schedule-columns {
+            display: none !important;
+        }
+    }
+
+    /* --- FIX: modal açıkken sayfa scroll kilidi için class --- */
+    body.ms-modal-open {
+        overflow: hidden !important;
+        height: 100% !important;
+        touch-action: none !important;
+    }
+
+    html.ms-modal-open {
+        overflow: hidden !important;
+        height: 100% !important;
     }
 </style>

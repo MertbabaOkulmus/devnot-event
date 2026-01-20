@@ -23,51 +23,33 @@ const teamData = [
 
 const scheduleData = [
   {
-    day: "Day 1",
+    day: "Salon 1",
     sessions: [
-      {
-        time: "08:00",
-        image: "images/team/1.webp",
-        name: "Joshua Henry",
-        title: "AI Research Lead, DeepTech Labs",
-        sessionTitle: "Session: Opening Keynote – The State of AI 2025",
-        description:
-          "Kick off the event with an insightful overview of where artificial intelligence is headed. Ava will explore breakthroughs, global shifts, and what’s next in deep learning, generative models, and AI ethics."
-      },
-      {
-        time: "12:00",
-        image: "images/team/2.webp",
-        name: "Leila Zhang",
-        title: "VP of Machine Learning, Google",
-        sessionTitle: "Session: Building Human-Centered AI Products",
-        description:
-          "This session covers how to design AI solutions that prioritize usability, fairness, and real-world impact. Bring your laptop—hands-on UX exercises included."
-      },
-      {
-        time: "16:00",
-        image: "images/team/3.webp",
-        name: "Carlos Rivera",
-        title: "Founder & CEO, NeuralCore",
-        sessionTitle: "Session: AI Policy & Regulation – A Global Overview",
-        description:
-          "Learn how nations and organizations are approaching AI governance, including frameworks for data privacy, bias mitigation, and accountability in model deployment."
-      }
+      { time: "08:00", name: "Joshua Henry", sessionTitle: "Session: Opening Keynote – The State of AI 2025" },
+      { time: "12:00", name: "Leila Zhang", sessionTitle: "Session: Building Human-Centered AI Products" },
+      { time: "16:00", name: "Carlos Rivera", sessionTitle: "Session: AI Policy & Regulation – A Global Overview" }
     ]
   },
   {
-    day: "Day 2",
+    day: "Salon 2",
     sessions: [
-      {
-        time: "09:00",
-        image: "images/team/5.webp",
-        name: "Leila Zhang",
-        title: "Head of AI Strategy, VisionFlow",
-        sessionTitle: "Session: Ethical AI — From Theory to Practice",
-        description:
-          "Explore how leading companies are implementing fairness, accountability, and transparency in real-world AI systems across healthcare and finance."
-      }
+      { time: "09:00", name: "Leila Zhang", sessionTitle: "Session: Ethical AI — From Theory to Practice" }
     ]
-  }
+  },
+  {
+    day: "Salon 3",
+    sessions: [
+      { time: "08:00", name: "Joshua Henry", sessionTitle: "Session: Opening Keynote – The State of AI 2025" },
+      { time: "12:00", name: "Leila Zhang", sessionTitle: "Session: Building Human-Centered AI Products" },
+      { time: "16:00", name: "Carlos Rivera", sessionTitle: "Session: AI Policy & Regulation – A Global Overview" }
+    ]
+  },
+  {
+    day: "Salon 4",
+    sessions: [
+      { time: "09:00", name: "Leila Zhang", sessionTitle: "Session: Ethical AI — From Theory to Practice" }
+    ]
+  },
 ];
 
 const tickets = [
@@ -76,33 +58,21 @@ const tickets = [
     price: "15.000 ₺",
     date: "Limited Tickets & Until December 22, 2025",
     className: "s2",
-    benefits: [
-      "Access to sessions and panels",
-      "Networking opportunities",
-      "All-day snacks and buffet lunch"
-    ]
+    benefits: ["Access to sessions and panels", "Networking opportunities", "All-day snacks and buffet lunch"]
   },
   {
     name: "Standart Ticket",
     price: "17.500 ₺",
     date: "Until March 31, 2026",
     className: "",
-    benefits: [
-      "Access to sessions and panels",
-      "Networking opportunities",
-      "All-day snacks and buffet lunch"
-    ]
+    benefits: ["Access to sessions and panels", "Networking opportunities", "All-day snacks and buffet lunch"]
   },
   {
     name: "Last Tickets",
     price: "19.500 ₺",
     date: "Starting from April 1, 2026",
     className: "",
-    benefits: [
-      "Access to sessions and panels",
-      "Networking opportunities",
-      "All-day snacks and buffet lunch"
-    ]
+    benefits: ["Access to sessions and panels", "Networking opportunities", "All-day snacks and buffet lunch"]
   }
 ];
 
@@ -165,6 +135,94 @@ function removeFromMySchedule(sessionId) {
   setMySchedule(list);
 }
 
+/* ---------------------------
+   Body scroll lock (modal) - FIXED + modal scroll allowed
+---------------------------- */
+function lockBodyScroll() {
+  if (document.body.classList.contains("ms-modal-open")) return;
+
+  const y = window.scrollY || window.pageYOffset || 0;
+  document.body.__msScrollY = y;
+
+  document.body.classList.add("ms-modal-open");
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${y}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+
+  if (!document.__msTouchMoveBound) {
+    let startY = 0;
+
+    document.__msTouchStartHandler = function (e) {
+      const modal = document.getElementById("my-schedule-modal");
+      if (!modal) return;
+      if (modal.style.display !== "block") return;
+
+      const touch = e.touches && e.touches[0];
+      if (touch) startY = touch.clientY;
+    };
+
+    document.__msTouchMoveHandler = function (e) {
+      const modal = document.getElementById("my-schedule-modal");
+      if (!modal) return;
+
+      const isModalOpen = modal.style.display === "block";
+      if (!isModalOpen) return;
+
+      const isInsideModal = !!e.target.closest("#my-schedule-modal");
+
+      // Modal dışına dokunup sürüklüyorsa: sayfa scroll'u engelle
+      if (!isInsideModal) {
+        e.preventDefault();
+        return;
+      }
+
+      // Modal içindeyse: modal scroll'a izin ver,
+      // ama en üst/en alt sınırda "arka sayfaya" scroll geçmesin (iOS rubber band)
+      const currentY = (e.touches && e.touches[0]) ? e.touches[0].clientY : startY;
+      const delta = currentY - startY;
+
+      const atTop = modal.scrollTop <= 0;
+      const atBottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 1;
+
+      // aşağı kaydırma: delta > 0 (parmak aşağı)
+      if (atTop && delta > 0) {
+        e.preventDefault();
+        return;
+      }
+
+      // yukarı kaydırma: delta < 0 (parmak yukarı)
+      if (atBottom && delta < 0) {
+        e.preventDefault();
+        return;
+      }
+
+      // diğer durumlar -> modal scroll serbest
+    };
+
+    document.addEventListener("touchstart", document.__msTouchStartHandler, { passive: true });
+    document.addEventListener("touchmove", document.__msTouchMoveHandler, { passive: false });
+    document.__msTouchMoveBound = true;
+  }
+}
+
+function unlockBodyScroll() {
+  const y = document.body.__msScrollY || 0;
+
+  document.body.classList.remove("ms-modal-open");
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+
+  window.scrollTo(0, y);
+}
+
+/* ---------------------------
+   My Schedule UI
+---------------------------- */
 function ensureMyScheduleUI() {
   // Floating Button
   let fab = document.getElementById("my-schedule-fab");
@@ -209,13 +267,13 @@ function ensureMyScheduleUI() {
     renderMyScheduleModalContent();
     backdrop.style.display = "block";
     modal.style.display = "block";
-    document.body.style.overflow = "hidden";
+    lockBodyScroll();
   }
 
   function closeModal() {
     backdrop.style.display = "none";
     modal.style.display = "none";
-    document.body.style.overflow = "";
+    unlockBodyScroll();
   }
 
   const openBtn = document.getElementById("my-schedule-open-btn");
@@ -264,19 +322,15 @@ function triggerMyScheduleAttention() {
   const fab = document.getElementById("my-schedule-fab");
   if (!fab) return;
 
-  // tekrar tekrar tıklanınca animasyonu yeniden başlatmak için:
   fab.classList.remove("attention");
-  // reflow trick
   void fab.offsetWidth;
   fab.classList.add("attention");
 
-  // animasyon bitince class'ı kaldır
   clearTimeout(fab.__attentionTimer);
   fab.__attentionTimer = setTimeout(() => {
     fab.classList.remove("attention");
   }, 1500);
 }
-
 
 function renderMyScheduleModalContent() {
   const content = document.getElementById("my-schedule-content");
@@ -317,18 +371,17 @@ function renderMyScheduleModalContent() {
 
     grouped[day].forEach(item => {
       html += `
-        <div class="my-schedule-item" data-session-id="${item.id}">
-          <img src="${item.image}" alt="${item.name}">
-          <div class="meta">
-            <div class="line1">
-              <div class="time">${item.time}</div>
-              <div class="session">${item.sessionTitle}</div>
-            </div>
-            <div class="speaker">${item.name} — ${item.title}</div>
-          </div>
-          <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
-        </div>
-      `;
+  <div class="my-schedule-item" data-session-id="${item.id}">
+    <div class="meta">
+      <div class="line1">
+        <div class="time">${item.time}</div>
+        <div class="session">${item.sessionTitle}</div>
+      </div>
+      <div class="speaker">${item.name}</div>
+    </div>
+    <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
+  </div>
+`;
     });
 
     html += `</div>`;
@@ -397,59 +450,144 @@ try {
 }
 
 /* ---------------------------
-   Event Schedule + Add Buttons
+   Schedule: responsive render + mobile tabs fully dynamic
 ---------------------------- */
-try {
+
+function isDesktopNow() {
+  return window.matchMedia("(min-width: 992px)").matches;
+}
+
+function clearScheduleRenders() {
   const scheduleContainer = document.getElementById("schedule-container");
+  if (scheduleContainer) scheduleContainer.innerHTML = "";
 
-  scheduleData.forEach(day => {
-    let dayHTML = `<li>`;
+  const scheduleColumns = document.getElementById("schedule-columns");
+  if (scheduleColumns) scheduleColumns.innerHTML = "";
+}
 
-    day.sessions.forEach(session => {
-      const sessionId = buildSessionId(day.day, session);
-      const isAdded = isInMySchedule(sessionId);
+function rebuildMobileTabNav() {
+  const nav = document.querySelector("#section-schedule .d-tab-nav");
+  if (!nav) return;
 
-      dayHTML += `
-      <div class="border-white-bottom-op-2 pb-5 mb-5" data-session-wrap="${sessionId}">
-        <div class="row g-4 align-items-center">
-          <div class="col-md-1">
-            ${session.time}
+  nav.innerHTML = scheduleData.map((d, i) => {
+    return `
+      <li class="${i === 0 ? "active-tab" : ""}">
+        <h3>${d.day}</h3>
+      </li>
+    `;
+  }).join("");
+}
+
+function applyMobileTabActive(activeIndex) {
+  const nav = document.querySelector("#section-schedule .d-tab-nav");
+  const scheduleContainer = document.getElementById("schedule-container");
+  if (!nav || !scheduleContainer) return;
+
+  const navItems = Array.from(nav.querySelectorAll("li"));
+  navItems.forEach((li, i) => {
+    if (i === activeIndex) li.classList.add("active-tab");
+    else li.classList.remove("active-tab");
+  });
+
+  const contentLis = Array.from(scheduleContainer.querySelectorAll(":scope > li"));
+  contentLis.forEach((li, i) => {
+    li.style.display = (i === activeIndex) ? "block" : "none";
+  });
+}
+
+function bindMobileTabClicks() {
+  const nav = document.querySelector("#section-schedule .d-tab-nav");
+  if (!nav) return;
+
+  const items = Array.from(nav.querySelectorAll("li"));
+  items.forEach((li, index) => {
+    if (li.__bound) return;
+    li.addEventListener("click", () => {
+      applyMobileTabActive(index);
+    });
+    li.__bound = true;
+  });
+}
+
+function renderSchedule() {
+  const scheduleContainer = document.getElementById("schedule-container");
+  if (!scheduleContainer) return;
+
+  const isDesktop = isDesktopNow();
+
+  let scheduleColumns = document.getElementById("schedule-columns");
+  if (!scheduleColumns) {
+    scheduleColumns = document.createElement("div");
+    scheduleColumns.id = "schedule-columns";
+    scheduleContainer.parentNode.insertBefore(scheduleColumns, scheduleContainer);
+  }
+
+  clearScheduleRenders();
+
+  function buildSessionHTML(day, session, sessionId) {
+    const isAdded = isInMySchedule(sessionId);
+
+    return `
+      <div class="schedule-session" data-session-wrap="${sessionId}">
+        <div class="ss-time">${session.time}</div>
+
+        <div class="ss-right">
+          <div>
+            <h5 class="ss-title">${session.sessionTitle}</h5>
+            <p class="ss-name">${session.name}</p>
           </div>
-          <div class="col-md-4">
-            <div class="d-flex align-items-center">
-              <img src="${session.image}" class="w-60px h-60px rounded-1 me-4" alt="${session.name}">
-              <div>
-                <div class="mb-0">${session.name}</div>
-                ${session.title}
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <h3>${session.sessionTitle}</h3>
-            <p class="fs-15 mb-0">${session.description}</p>
 
+          <div class="ss-actions">
             <button
-              class="session-add-btn"
+              class="session-add-btn ${isAdded ? "is-remove" : ""}"
               type="button"
               data-session-id="${sessionId}"
               data-day="${day.day}"
               data-time="${session.time}"
-              data-image="${session.image}"
               data-name="${session.name}"
-              data-title="${session.title}"
               data-session-title="${session.sessionTitle}"
-              data-description="${String(session.description).replace(/"/g, "&quot;")}"
-              ${isAdded ? 'disabled aria-disabled="true"' : ''}
-            >${isAdded ? "Added" : "Add"}</button>
+              data-description="${String(session.description || "").replace(/"/g, "&quot;")}"
+            >${isAdded ? "Remove" : "Add"}</button>
           </div>
         </div>
       </div>
     `;
+  }
+
+  if (!isDesktop) {
+    rebuildMobileTabNav();
+  }
+
+  scheduleData.forEach((day, dayIndex) => {
+    if (!isDesktop) {
+      let dayHTML = `<li data-day-index="${dayIndex}">`;
+      day.sessions.forEach(session => {
+        const sessionId = buildSessionId(day.day, session);
+        dayHTML += buildSessionHTML(day, session, sessionId);
+      });
+      dayHTML += `</li>`;
+      scheduleContainer.insertAdjacentHTML("beforeend", dayHTML);
+      return;
+    }
+
+    let colHTML = `
+      <div class="schedule-col">
+        <h3 class="schedule-col-title">${day.day}</h3>
+    `;
+
+    day.sessions.forEach(session => {
+      const sessionId = buildSessionId(day.day, session);
+      colHTML += buildSessionHTML(day, session, sessionId);
     });
 
-    dayHTML += `</li>`;
-    scheduleContainer.insertAdjacentHTML("beforeend", dayHTML);
+    colHTML += `</div>`;
+    scheduleColumns.insertAdjacentHTML("beforeend", colHTML);
   });
+
+  if (!isDesktop) {
+    bindMobileTabClicks();
+    applyMobileTabActive(0);
+  }
 
   const addButtons = document.querySelectorAll(".session-add-btn[data-session-id]");
   addButtons.forEach(btn => {
@@ -460,16 +598,13 @@ try {
       const id = b.getAttribute("data-session-id");
       if (!id) return;
 
-      // REMOVE
       if (isInMySchedule(id)) {
         removeFromMySchedule(id);
-
         syncScheduleButtonsWithStorage();
         updateMyScheduleFabVisibility();
         return;
       }
 
-      // ADD
       const item = {
         id,
         day: b.getAttribute("data-day") || "",
@@ -485,7 +620,7 @@ try {
 
       syncScheduleButtonsWithStorage();
       updateMyScheduleFabVisibility();
-      triggerMyScheduleAttention(); // önce eklediğimiz animasyon
+      triggerMyScheduleAttention();
     });
 
     btn.__bound = true;
@@ -494,7 +629,26 @@ try {
   ensureMyScheduleUI();
   updateMyScheduleFabVisibility();
   syncScheduleButtonsWithStorage();
+}
 
+function initScheduleResponsiveRerender() {
+  let prev = isDesktopNow();
+  if (document.__scheduleResizeBound) return;
+
+  window.addEventListener("resize", () => {
+    const now = isDesktopNow();
+    if (now !== prev) {
+      prev = now;
+      renderSchedule();
+    }
+  });
+
+  document.__scheduleResizeBound = true;
+}
+
+try {
+  renderSchedule();
+  initScheduleResponsiveRerender();
 } catch (error) {
 
 }
