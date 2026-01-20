@@ -256,9 +256,16 @@ function ensureMyScheduleUI() {
     modal.innerHTML = `
       <div class="ms-header">
         <h3 class="ms-title">My Schedule</h3>
-        <button class="ms-close" id="my-schedule-close-btn" type="button">✕</button>
+        <div class="ms-header-actions">
+          <button class="ms-download" id="my-schedule-download-btn" type="button">Planı indir</button>
+          <button class="ms-openpng" id="my-schedule-openpng-btn" type="button">PNG'yi aç</button>
+          <button class="ms-close" id="my-schedule-close-btn" type="button">✕</button>
+        </div>
       </div>
-      <div id="my-schedule-content" class="my-schedule-list"></div>
+
+      <div id="my-schedule-export-area">
+        <div id="my-schedule-content" class="my-schedule-list"></div>
+      </div>
     `;
     document.body.appendChild(modal);
   }
@@ -271,26 +278,139 @@ function ensureMyScheduleUI() {
   }
 
   function closeModal() {
-    backdrop.style.display = "none";
-    modal.style.display = "none";
-    unlockBodyScroll();
+    requestAnimationFrame(() => {
+      backdrop.style.display = "none";
+      modal.style.display = "none";
+      unlockBodyScroll();
+    });
+  }
+
+  async function exportMyScheduleAsPng({ openInNewTab = false } = {}) {
+    const m = document.getElementById("my-schedule-modal");
+    const area = document.getElementById("my-schedule-export-area");
+
+    if (!m || !area) return;
+
+    renderMyScheduleModalContent();
+
+    if (typeof window.html2canvas !== "function") {
+      alert("PNG export için html2canvas yüklenemedi.");
+      return;
+    }
+
+    const prevMaxH = m.style.maxHeight;
+    const prevOverflow = m.style.overflow;
+    const prevScrollTop = m.scrollTop;
+
+    try {
+      m.classList.add("ms-exporting");
+      m.style.maxHeight = "none";
+      m.style.overflow = "visible";
+      m.scrollTop = 0;
+
+      const scale = Math.max(2, Math.min(3, window.devicePixelRatio || 2));
+
+      const canvas = await window.html2canvas(area, {
+        backgroundColor: "#0f1115",
+        scale,
+        useCORS: true
+      });
+
+      const dataUrl = canvas.toDataURL("image/png");
+
+      if (openInNewTab) {
+        const w = window.open("", "_blank");
+        if (w) {
+          w.document.open();
+          w.document.write(`
+            <!doctype html>
+            <html>
+              <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>My Schedule</title>
+                <style>
+                  body{margin:0;background:#0f1115;color:#fff;font-family:Arial, sans-serif}
+                  .wrap{max-width:980px;margin:0 auto;padding:16px}
+                  img{width:100%;height:auto;border-radius:14px;border:1px solid rgba(255,255,255,.12)}
+                </style>
+              </head>
+              <body>
+                <div class="wrap">
+                  <img src="${dataUrl}" alt="My Schedule PNG"/>
+                </div>
+              </body>
+            </html>
+          `);
+          w.document.close();
+        }
+        return;
+      }
+
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = "my-schedule.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      console.error(e);
+      alert("PNG oluşturulurken hata oluştu.");
+    } finally {
+      m.classList.remove("ms-exporting");
+      m.style.maxHeight = prevMaxH;
+      m.style.overflow = prevOverflow;
+      m.scrollTop = prevScrollTop;
+    }
   }
 
   const openBtn = document.getElementById("my-schedule-open-btn");
   const closeBtn = document.getElementById("my-schedule-close-btn");
+  const downloadBtn = document.getElementById("my-schedule-download-btn");
+  const openPngBtn = document.getElementById("my-schedule-openpng-btn");
 
   if (openBtn && !openBtn.__bound) {
-    openBtn.addEventListener("click", openModal);
+    openBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal();
+    });
     openBtn.__bound = true;
   }
 
   if (closeBtn && !closeBtn.__bound) {
-    closeBtn.addEventListener("click", closeModal);
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+    });
     closeBtn.__bound = true;
   }
 
+  if (downloadBtn && !downloadBtn.__bound) {
+    downloadBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await exportMyScheduleAsPng({ openInNewTab: false });
+    });
+    downloadBtn.__bound = true;
+  }
+
+  if (openPngBtn && !openPngBtn.__bound) {
+    openPngBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      await exportMyScheduleAsPng({ openInNewTab: true });
+    });
+    openPngBtn.__bound = true;
+  }
+
   if (backdrop && !backdrop.__bound) {
-    backdrop.addEventListener("click", closeModal);
+    backdrop.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+    });
     backdrop.__bound = true;
   }
 
@@ -344,47 +464,37 @@ function renderMyScheduleModalContent() {
     return;
   }
 
-  const dayOrder = scheduleData.map(d => d.day);
-  const grouped = selected.reduce((acc, item) => {
-    const key = item.day || "Other";
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(item);
-    return acc;
-  }, {});
+  const items = selected.slice().sort((a, b) => {
+    const ta = String(a.time || "");
+    const tb = String(b.time || "");
+    const tcmp = ta.localeCompare(tb);
+    if (tcmp !== 0) return tcmp;
 
-  const days = Object.keys(grouped).sort((a, b) => {
-    const ia = dayOrder.indexOf(a);
-    const ib = dayOrder.indexOf(b);
-    if (ia === -1 && ib === -1) return a.localeCompare(b);
-    if (ia === -1) return 1;
-    if (ib === -1) return -1;
-    return ia - ib;
-  });
+    const da = String(a.day || "");
+    const db = String(b.day || "");
+    const dcmp = da.localeCompare(db);
+    if (dcmp !== 0) return dcmp;
 
-  days.forEach(day => {
-    grouped[day].sort((x, y) => String(x.time).localeCompare(String(y.time)));
+    return String(a.sessionTitle || "").localeCompare(String(b.sessionTitle || ""));
   });
 
   let html = "";
-  days.forEach(day => {
-    html += `<div class="my-schedule-day"><h4>${day}</h4>`;
 
-    grouped[day].forEach(item => {
-      html += `
-  <div class="my-schedule-item" data-session-id="${item.id}">
-    <div class="meta">
-      <div class="line1">
-        <div class="time">${item.time}</div>
-        <div class="session">${item.sessionTitle}</div>
+  items.forEach(item => {
+    const timeWithRoom = `${item.time || ""} • ${item.day || ""}`.trim();
+
+    html += `
+      <div class="my-schedule-item" data-session-id="${item.id}">
+        <div class="meta">
+          <div class="line1">
+            <div class="time">${timeWithRoom}</div>
+            <div class="session">${item.sessionTitle}</div>
+          </div>
+          <div class="speaker">${item.name}</div>
+        </div>
+        <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
       </div>
-      <div class="speaker">${item.name}</div>
-    </div>
-    <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
-  </div>
-`;
-    });
-
-    html += `</div>`;
+    `;
   });
 
   content.innerHTML = html;
@@ -393,6 +503,8 @@ function renderMyScheduleModalContent() {
   removeButtons.forEach(btn => {
     if (btn.__bound) return;
     btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const id = e.currentTarget.getAttribute("data-remove-id");
       if (!id) return;
 
@@ -594,6 +706,9 @@ function renderSchedule() {
     if (btn.__bound) return;
 
     btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const b = e.currentTarget;
       const id = b.getAttribute("data-session-id");
       if (!id) return;

@@ -545,6 +545,9 @@
     <script src="js/designesia.js"></script>
     <script src="js/countdown-custom.js"></script>
     <script src="js/custom-marquee.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
     <script src="js/container.js"></script>
 
 </body>
@@ -603,11 +606,18 @@
         font-weight: 700;
     }
 
-    /* --- My Schedule Modal --- */
     .my-schedule-modal-backdrop {
         position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, .72);
+        top: 0;
+        left: 0;
+
+        width: 100vw;
+        height: 100vh;
+
+        backdrop-filter: blur(3px);
+        background: rgba(0, 0, 0, 0.28);
+        -webkit-backdrop-filter: blur(2px);
+
         z-index: 10000;
         display: none;
     }
@@ -657,6 +667,14 @@
         margin: 0;
     }
 
+    .my-schedule-modal .ms-header-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .my-schedule-modal .ms-download,
+    .my-schedule-modal .ms-openpng,
     .my-schedule-modal .ms-close {
         background: transparent;
         border: 1px solid rgba(255, 255, 255, .20);
@@ -664,10 +682,27 @@
         border-radius: 10px;
         padding: 8px 10px;
         line-height: 1;
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
     }
 
+    .my-schedule-modal .ms-download:hover,
+    .my-schedule-modal .ms-openpng:hover,
     .my-schedule-modal .ms-close:hover {
         border-color: rgba(255, 255, 255, .35);
+    }
+
+    .my-schedule-modal .ms-openpng {
+        display: none !important;
+    }
+
+    .my-schedule-modal.ms-exporting .ms-header-actions {
+        display: none !important;
+    }
+
+    .my-schedule-modal.ms-exporting .remove-btn {
+        display: none !important;
     }
 
     .my-schedule-list {
