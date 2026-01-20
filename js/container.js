@@ -135,90 +135,66 @@ function removeFromMySchedule(sessionId) {
   setMySchedule(list);
 }
 
-/* ---------------------------
-   Body scroll lock (modal) - FIXED + modal scroll allowed
----------------------------- */
+let __msScrollY = 0;
+
 function lockBodyScroll() {
   if (document.body.classList.contains("ms-modal-open")) return;
 
-  const y = window.scrollY || window.pageYOffset || 0;
-  document.body.__msScrollY = y;
+  __msScrollY = window.scrollY || window.pageYOffset || 0;
 
+  document.documentElement.classList.add("ms-modal-open");
   document.body.classList.add("ms-modal-open");
+
   document.body.style.position = "fixed";
-  document.body.style.top = `-${y}px`;
+  document.body.style.top = `-${__msScrollY}px`;
   document.body.style.left = "0";
   document.body.style.right = "0";
   document.body.style.width = "100%";
+  document.body.style.overflow = "hidden";
 
-  if (!document.__msTouchMoveBound) {
-    let startY = 0;
-
-    document.__msTouchStartHandler = function (e) {
-      const modal = document.getElementById("my-schedule-modal");
-      if (!modal) return;
-      if (modal.style.display !== "block") return;
-
-      const touch = e.touches && e.touches[0];
-      if (touch) startY = touch.clientY;
-    };
-
-    document.__msTouchMoveHandler = function (e) {
-      const modal = document.getElementById("my-schedule-modal");
-      if (!modal) return;
-
-      const isModalOpen = modal.style.display === "block";
-      if (!isModalOpen) return;
-
-      const isInsideModal = !!e.target.closest("#my-schedule-modal");
-
-      // Modal dışına dokunup sürüklüyorsa: sayfa scroll'u engelle
-      if (!isInsideModal) {
-        e.preventDefault();
-        return;
-      }
-
-      // Modal içindeyse: modal scroll'a izin ver,
-      // ama en üst/en alt sınırda "arka sayfaya" scroll geçmesin (iOS rubber band)
-      const currentY = (e.touches && e.touches[0]) ? e.touches[0].clientY : startY;
-      const delta = currentY - startY;
-
-      const atTop = modal.scrollTop <= 0;
-      const atBottom = modal.scrollTop + modal.clientHeight >= modal.scrollHeight - 1;
-
-      // aşağı kaydırma: delta > 0 (parmak aşağı)
-      if (atTop && delta > 0) {
-        e.preventDefault();
-        return;
-      }
-
-      // yukarı kaydırma: delta < 0 (parmak yukarı)
-      if (atBottom && delta < 0) {
-        e.preventDefault();
-        return;
-      }
-
-      // diğer durumlar -> modal scroll serbest
-    };
-
-    document.addEventListener("touchstart", document.__msTouchStartHandler, { passive: true });
-    document.addEventListener("touchmove", document.__msTouchMoveHandler, { passive: false });
-    document.__msTouchMoveBound = true;
+  const modal = document.getElementById("my-schedule-modal");
+  const content = document.getElementById("my-schedule-content");
+  if (modal) {
+    modal.style.overscrollBehavior = "contain";
+  }
+  if (content) {
+    content.style.overflowY = "auto";
+    content.style.webkitOverflowScrolling = "touch";
+    content.style.overscrollBehavior = "contain";
   }
 }
 
 function unlockBodyScroll() {
-  const y = document.body.__msScrollY || 0;
-
+  document.documentElement.classList.remove("ms-modal-open");
   document.body.classList.remove("ms-modal-open");
+
   document.body.style.position = "";
   document.body.style.top = "";
   document.body.style.left = "";
   document.body.style.right = "";
   document.body.style.width = "";
+  document.body.style.overflow = "";
 
-  window.scrollTo(0, y);
+  const html = document.documentElement;
+  const prevScrollBehavior = html.style.scrollBehavior;
+
+  html.style.scrollBehavior = "auto";
+  window.scrollTo({ top: __msScrollY, left: 0, behavior: "auto" });
+
+  requestAnimationFrame(() => {
+    html.style.scrollBehavior = prevScrollBehavior || "";
+  });
+
+  const modal = document.getElementById("my-schedule-modal");
+  const content = document.getElementById("my-schedule-content");
+  if (modal) modal.style.overscrollBehavior = "";
+  if (content) {
+    content.style.overflowY = "";
+    content.style.webkitOverflowScrolling = "";
+    content.style.overscrollBehavior = "";
+  }
 }
+
 
 /* ---------------------------
    My Schedule UI
@@ -269,6 +245,9 @@ function ensureMyScheduleUI() {
     `;
     document.body.appendChild(modal);
   }
+  backdrop.style.display = "none";
+  modal.style.display = "none";
+  unlockBodyScroll();
 
   function openModal() {
     renderMyScheduleModalContent();

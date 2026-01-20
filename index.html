@@ -639,7 +639,7 @@
         border-radius: 14px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
         color: #fff;
-        padding: 18px 18px 14px;
+        padding: 0px 18px 14px;
 
         overscroll-behavior: contain;
         -webkit-overflow-scrolling: touch;
@@ -652,6 +652,7 @@
         justify-content: space-between;
         gap: 12px;
         padding-bottom: 12px;
+        padding-top: 18px;
         border-bottom: 1px solid rgba(255, 255, 255, .10);
         margin-bottom: 14px;
 
@@ -1027,5 +1028,25 @@
     html.ms-modal-open {
         overflow: hidden !important;
         height: 100% !important;
+    }
+
+    html.ms-modal-open,
+    body.ms-modal-open {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .my-schedule-modal {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .my-schedule-modal .ms-header {
+        flex: 0 0 auto;
+    }
+
+    #my-schedule-content {
+        flex: 1 1 auto;
+        min-height: 0;
     }
 </style>
