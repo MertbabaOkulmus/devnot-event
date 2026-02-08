@@ -24,6 +24,7 @@
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <!-- color scheme -->
     <link id="colors" href="css/colors/scheme-01.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
 </head>
 
@@ -246,26 +247,16 @@
             <div class="gradient-edge-top"></div>
             <div class="gradient-edge-bottom"></div>
             <div class="sw-overlay op-8"></div>
+
             <div class="container">
                 <div class="row g-4">
-
                     <div class="col-md-12 wow fadeInUp">
-                        <div class="owl-6 no-alpha owl-carousel owl-theme wow mask-right">
-                            <img src="images/logo-light/1.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/2.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/3.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/4.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/5.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/6.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/7.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/8.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/9.webp" class="w-100 px-4" alt="">
-                            <img src="images/logo-light/10.webp" class="w-100 px-4" alt="">
-                        </div>
+                        <div id="sponsors-container"></div>
                     </div>
                 </div>
             </div>
         </section>
+
 
         <section id="section-schedule" class="bg-dark section-dark text-light">
             <div class="container">
@@ -565,10 +556,24 @@
 
     .team-card {
         width: 300px;
-        height: 300px;
         border-radius: 8px;
         overflow: hidden;
         position: relative;
+        height: auto;
+        border-radius: 16px;
+
+    }
+    .team-card .card-image {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .team-card .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .team-card img {
@@ -578,17 +583,35 @@
     }
 
     .card-info {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        text-align: center;
-        padding: 10px;
+        background: linear-gradient(to top,
+                rgba(0, 0, 0, .95),
+                rgba(0, 0, 0, .75));
 
-        h3 {
-            font-size: 22px;
-        }
+        padding: 14px 10px 16px;
+        text-align: center;
+        color: #fff;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .card-info h3 {
+        font-size: 18px;
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .card-info span {
+        display: block;
+        font-size: 13px;
+        opacity: .85;
+        margin-top: 4px;
+    }
+
+    .card-info .linkedin {
+        margin-top: 10px;
+        align-self: center;
     }
 
     /* --- My Schedule (Floating Button) --- */
@@ -1048,5 +1071,112 @@
     #my-schedule-content {
         flex: 1 1 auto;
         min-height: 0;
+    }
+
+    #sponsors-container {
+        display: grid;
+        gap: 26px;
+        padding-top: 80px;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .sponsor-cat {
+        border: 1px solid rgba(255, 255, 255, .10);
+        background: rgb(27, 23, 23);
+        border-radius: 14px;
+        padding: 18px;
+        text-align: center;
+    }
+
+    .sponsor-cat-title {
+        color: #fff !important;
+        opacity: .95 !important;
+        font-weight: 900;
+        letter-spacing: .2px;
+        margin: 0 0 14px 0;
+        font-size: 20px;
+    }
+
+    .sponsor-grid {
+        display: flex;
+        gap: 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: center;
+    }
+
+    @media (min-width: 576px) {
+        .sponsor-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 768px) {
+        .sponsor-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 992px) {
+        .sponsor-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+        }
+    }
+
+    @media (min-width: 1200px) {
+        .sponsor-grid {
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+        }
+    }
+
+    .sponsor-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 86px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, .10);
+        background: rgba(0, 0, 0, .20);
+        padding: 12px;
+        transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        text-decoration: none;
+    }
+
+    .sponsor-item:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, .22);
+        background: rgba(255, 255, 255, .05);
+    }
+
+    .sponsor-item img {
+        max-width: 100%;
+        max-height: 44px;
+        object-fit: contain;
+        display: block;
+
+    }
+
+    .sponsor-cat[data-tier="main"] .sponsor-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    @media (min-width: 768px) {
+        .sponsor-cat[data-tier="main"] .sponsor-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    .sponsor-cat[data-tier="main"] .sponsor-item {
+        min-height: 110px;
+    }
+
+    .sponsor-cat[data-tier="main"] .sponsor-item img {
+        max-height: 60px;
+    }
+
+    section[aria-label="section"].jarallax .sw-overlay {
+        background: linear-gradient(to bottom,
+                rgba(0, 0, 0, .72),
+                rgba(0, 0, 0, .55)) !important;
     }
 </style>

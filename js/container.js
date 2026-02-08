@@ -1,23 +1,27 @@
 const teamData = [
   {
-    "name": "Joshua Henry",
-    "title": "Chief AI Scientist, OpenAI",
-    "image": "images/speakers/alper-hankendi.jpg"
+    name: "Joshua Henry",
+    title: "Chief AI Scientist, OpenAI",
+    image: "images/speakers/alper-hankendi.jpg",
+    linkedin: "https://www.linkedin.com/in/joshua-henry"
   },
   {
-    "name": "Leila Zhang",
-    "title": "VP of Machine Learning, Google",
-    "image": "images/speakers/emre-toptanci.jpg"
+    name: "Leila Zhang",
+    title: "VP of Machine Learning, Google",
+    image: "images/speakers/emre-toptanci.jpg",
+    linkedin: "https://www.linkedin.com/in/leila-zhang"
   },
   {
-    "name": "Uğur Rivera",
-    "title": "Founder & CEO, Devnot",
-    "image": "images/speakers/lemi-orhan-ergin.jpg"
+    name: "Uğur Rivera",
+    title: "Founder & CEO, Devnot",
+    image: "images/speakers/lemi-orhan-ergin.jpg",
+    linkedin: "https://www.linkedin.com/in/ugur-rivera"
   },
   {
-    "name": "Sofia Kim",
-    "title": "CTO, QuantumLeap",
-    "image": "images/speakers/ugur-umutluoglu.jpg"
+    name: "Sofia Kim",
+    title: "CTO, QuantumLeap",
+    image: "images/speakers/ugur-umutluoglu.jpg"
+    // linkedin yoksa ikon otomatik çıkmaz
   }
 ];
 
@@ -83,6 +87,32 @@ const sliderImages = [
   { src: "images/slider/tls2025-4.jpg" },
   { src: "images/slider/tls2025-5.jpg" },
   { src: "images/slider/tls2025-6.jpg" }
+];
+
+const sponsorData = [
+  {
+    key: "main",
+    title: "Main Sponsor",
+    items: [
+      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
+    ]
+  },
+  {
+    key: "platinum",
+    title: "Platinum Sponsors",
+    items: [
+      { name: "Sponsor 2", logo: "images/logo-light/2.webp", url: "https://example.com" },
+      { name: "Sponsor 3", logo: "images/logo-light/3.webp" }
+    ]
+  },
+  {
+    key: "gold",
+    title: "Gold Sponsors",
+    items: [
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
+      { name: "Sponsor 5", logo: "images/logo-light/5.webp" }
+    ]
+  }
 ];
 
 /* ---------------------------
@@ -523,16 +553,24 @@ try {
 
   teamData.forEach(member => {
     const cardHTML = `
-      <div class="team-card">
-        <div class="card-inner">
-          <img src="${member.image}" alt="${member.name}">
-          <div class="card-info">
-            <h3>${member.name}</h3>
-            <span>${member.title}</span>
-          </div>
-        </div>
-      </div>
-    `;
+  <div class="team-card">
+    <div class="card-image">
+      <img src="${member.image}" alt="${member.name}">
+    </div>
+
+    <div class="card-info">
+      <h3>${member.name}</h3>
+      <span>${member.title}</span>
+
+      ${member.linkedin ? `
+        <a class="linkedin" href="${member.linkedin}" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      ` : ``}
+    </div>
+  </div>
+`;
+
     container.insertAdjacentHTML('beforeend', cardHTML);
   });
 
@@ -805,4 +843,48 @@ try {
 
 } catch (error) {
 
+}
+
+try {
+  const sponsorContainer = document.getElementById("sponsors-container");
+  if (sponsorContainer && Array.isArray(sponsorData)) {
+    const cats = sponsorData
+      .filter(c => c && Array.isArray(c.items) && c.items.length > 0);
+
+    sponsorContainer.innerHTML = cats.map(cat => {
+      const itemsHTML = cat.items.map(it => {
+        const name = it?.name || "Sponsor";
+        const logo = it?.logo || "";
+        const url = it?.url || "";
+
+        if (!logo) return "";
+
+        if (url) {
+          return `
+            <a class="sponsor-item is-link" href="${url}" target="_blank" rel="noopener" aria-label="${name}" title="${name}">
+              <img src="${logo}" alt="${name}">
+            </a>
+          `;
+        }
+
+        return `
+          <div class="sponsor-item" aria-label="${name}" title="${name}">
+            <img src="${logo}" alt="${name}">
+          </div>
+        `;
+      }).join("");
+
+      if (!itemsHTML.trim()) return "";
+
+      return `
+        <div class="sponsor-cat" data-tier="${cat.key || ""}">
+          <h3 class="sponsor-cat-title">${cat.title || ""}</h3>
+          <div class="sponsor-grid">
+            ${itemsHTML}
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+} catch (error) {
 }
