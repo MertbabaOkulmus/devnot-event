@@ -95,6 +95,9 @@ const sponsorData = [
     title: "Main Sponsor",
     items: [
       { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
+      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
+      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
+      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
     ]
   },
   {
@@ -102,7 +105,7 @@ const sponsorData = [
     title: "Platinum Sponsors",
     items: [
       { name: "Sponsor 2", logo: "images/logo-light/2.webp", url: "https://example.com" },
-      { name: "Sponsor 3", logo: "images/logo-light/3.webp" }
+      { name: "Sponsor 3", logo: "images/logo-light/3.webp" },
     ]
   },
   {
@@ -110,7 +113,10 @@ const sponsorData = [
     title: "Gold Sponsors",
     items: [
       { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
-      { name: "Sponsor 5", logo: "images/logo-light/5.webp" }
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
     ]
   }
 ];
@@ -845,13 +851,26 @@ try {
 
 }
 
+/* ---------------------------
+   Sponsors render
+---------------------------- */
 try {
   const sponsorContainer = document.getElementById("sponsors-container");
   if (sponsorContainer && Array.isArray(sponsorData)) {
     const cats = sponsorData
       .filter(c => c && Array.isArray(c.items) && c.items.length > 0);
 
-    sponsorContainer.innerHTML = cats.map(cat => {
+    sponsorContainer.innerHTML = `
+      <div class="sponsors-header">
+        <div class="sponsors-kicker">Sponsors</div>
+        <div class="sponsors-title">Partners & Supporters</div>
+        <div class="sponsors-desc">
+          Our sponsors help make Tech Leaders Summit possible. Explore the brands supporting the community.
+        </div>
+      </div>
+    ` + cats.map(cat => {
+      const tierLabel = String(cat.key || "").toUpperCase();
+
       const itemsHTML = cat.items.map(it => {
         const name = it?.name || "Sponsor";
         const logo = it?.logo || "";
@@ -878,7 +897,9 @@ try {
 
       return `
         <div class="sponsor-cat" data-tier="${cat.key || ""}">
-          <h3 class="sponsor-cat-title">${cat.title || ""}</h3>
+          <div class="sponsor-cat-head">
+            <h3 class="sponsor-cat-title">${cat.title || ""}</h3>
+          </div>
           <div class="sponsor-grid">
             ${itemsHTML}
           </div>
@@ -888,3 +909,148 @@ try {
   }
 } catch (error) {
 }
+
+(function initHeaderNav() {
+  const header = document.getElementById("site-header");
+  if (!header) return;
+
+  const toggleBtn = document.getElementById("nav-toggle");
+  const closeBtn = document.getElementById("mobile-nav-close");
+  const backdrop = document.getElementById("mobile-nav-backdrop");
+  const mobileNav = document.getElementById("mobile-nav");
+
+  const desktopLinks = Array.from(document.querySelectorAll(".site-nav .nav-link"));
+  const mobileLinks = Array.from(document.querySelectorAll(".mobile-nav .mnav-link"));
+  const allLinks = [...desktopLinks, ...mobileLinks].filter(Boolean);
+
+  const sections = [
+    "section-about",
+    "section-speakers",
+    "section-sponsors",
+    "section-schedule",
+    "section-tickets",
+    "section-venue",
+    "section-faq",
+  ].map(id => document.getElementById(id)).filter(Boolean);
+
+  function setSolidHeader() {
+    const y = window.scrollY || 0;
+    if (y > 6) header.classList.add("is-solid");
+    else header.classList.remove("is-solid");
+  }
+
+  function openNav() {
+    document.body.classList.add("nav-open");
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "true");
+    if (mobileNav) mobileNav.setAttribute("aria-hidden", "false");
+    if (backdrop) backdrop.setAttribute("aria-hidden", "false");
+  }
+
+  function closeNav() {
+    document.body.classList.remove("nav-open");
+    if (toggleBtn) toggleBtn.setAttribute("aria-expanded", "false");
+    if (mobileNav) mobileNav.setAttribute("aria-hidden", "true");
+    if (backdrop) backdrop.setAttribute("aria-hidden", "true");
+  }
+
+  function getHeaderOffset() {
+    const h = header.getBoundingClientRect().height || 80;
+    return Math.round(h + 10);
+  }
+
+  function smoothScrollToHash(hash) {
+    if (!hash || hash[0] !== "#") return;
+    const el = document.querySelector(hash);
+    if (!el) return;
+
+    const top = el.getBoundingClientRect().top + (window.scrollY || 0) - getHeaderOffset();
+    window.scrollTo({ top, left: 0, behavior: "smooth" });
+  }
+
+  function clearActive() {
+    desktopLinks.forEach(a => a.classList.remove("is-active"));
+  }
+
+  function setActiveById(id) {
+    clearActive();
+    const hash = `#${id}`;
+    desktopLinks.forEach(a => {
+      if ((a.getAttribute("href") || "") === hash) a.classList.add("is-active");
+    });
+  }
+
+  function updateActiveOnScroll() {
+    const y = (window.scrollY || 0) + getHeaderOffset() + 6;
+
+    // en alttaysak son section'ı seç
+    const nearBottom = (window.innerHeight + (window.scrollY || 0)) >= (document.documentElement.scrollHeight - 4);
+    if (nearBottom) {
+      const last = sections[sections.length - 1];
+      if (last) setActiveById(last.id);
+      return;
+    }
+
+    let current = null;
+    for (const s of sections) {
+      if (s.offsetTop <= y) current = s;
+    }
+    if (current) setActiveById(current.id);
+  }
+
+  if (toggleBtn && !toggleBtn.__bound) {
+    toggleBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (document.body.classList.contains("nav-open")) closeNav();
+      else openNav();
+    });
+    toggleBtn.__bound = true;
+  }
+
+  if (closeBtn && !closeBtn.__bound) {
+    closeBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeNav();
+    });
+    closeBtn.__bound = true;
+  }
+
+  if (backdrop && !backdrop.__bound) {
+    backdrop.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeNav();
+    });
+    backdrop.__bound = true;
+  }
+
+  if (!document.__headerEscBound) {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeNav();
+    });
+    document.__headerEscBound = true;
+  }
+
+  allLinks.forEach(a => {
+    if (a.__bound) return;
+    a.addEventListener("click", (e) => {
+      const href = a.getAttribute("href") || "";
+      if (href.startsWith("#")) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeNav();
+        smoothScrollToHash(href);
+      }
+    });
+    a.__bound = true;
+  });
+
+  window.addEventListener("scroll", () => {
+    setSolidHeader();
+    updateActiveOnScroll();
+  }, { passive: true });
+
+  setSolidHeader();
+  updateActiveOnScroll();
+})();
