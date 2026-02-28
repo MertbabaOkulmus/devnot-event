@@ -3,7 +3,8 @@ const teamData = [
     name: "Joshua Henry",
     title: "Chief AI Scientist, OpenAI",
     image: "images/speakers/alper-hankendi.jpg",
-    linkedin: "https://www.linkedin.com/in/joshua-henry"
+    linkedin: "https://www.linkedin.com/in/joshua-henry",
+    caption: "Keynote Speaker"
   },
   {
     name: "Leila Zhang",
@@ -559,30 +560,34 @@ try {
 
   teamData.forEach(member => {
     const cardHTML = `
-  <div class="team-card">
-    <div class="card-image">
-      <img src="${member.image}" alt="${member.name}">
-    </div>
+      <div class="team-card">
+        <div class="card-image">
+          <img src="${member.image}" alt="${member.name}">
+          
+          ${member.caption ? `
+            <div class="caption-badge">
+              ${member.caption}
+            </div>
+          ` : ``}
+        </div>
 
-    <div class="card-info">
-      <h3>${member.name}</h3>
-      <span>${member.title}</span>
+        <div class="card-info">
+          <h3>${member.name}</h3>
+          <span>${member.title}</span>
 
-      ${member.linkedin ? `
-        <a class="linkedin" href="${member.linkedin}" target="_blank" rel="noopener">
-          <i class="fab fa-linkedin-in"></i>
-        </a>
-      ` : ``}
-    </div>
-  </div>
-`;
+          ${member.linkedin ? `
+            <a class="linkedin" href="${member.linkedin}" target="_blank" rel="noopener">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+          ` : ``}
+        </div>
+      </div>
+    `;
 
     container.insertAdjacentHTML('beforeend', cardHTML);
   });
 
-} catch (error) {
-
-}
+} catch (error) { }
 
 /* ---------------------------
    Schedule: responsive render + mobile tabs fully dynamic
