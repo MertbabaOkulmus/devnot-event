@@ -1327,13 +1327,17 @@
     }
 
     @media (max-width: 991px) {
-        .schedule-session {
-            margin-bottom: 16px;
-            padding-bottom: 20px;
+
+        .tls-header .site-nav {
+            display: none !important;
         }
 
-        #schedule-columns {
-            display: none !important;
+        .tls-header .tls-nav-toggle {
+            display: inline-flex !important;
+        }
+
+        .tls-header-inner {
+            justify-content: flex-end;
         }
     }
 
@@ -1570,6 +1574,10 @@
             display: none !important;
         }
 
+        .tls-nav-toggle {
+            display: inline-flex !important;
+        }
+
         #nav-toggle {
             display: inline-flex !important;
         }
@@ -1581,8 +1589,9 @@
         left: 0;
         right: 0;
         z-index: 20000;
+        height: 48px;
+        box-sizing: border-box;
         border-bottom: 1px solid rgba(255, 255, 255, .10);
-
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }
@@ -1590,11 +1599,12 @@
     .tls-header-inner {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 12px 16px;
+        height: 48px;
+        padding: 0 16px;
         display: flex;
         align-items: center;
-        justify-content: flex-end;
-        gap: 12px;
+        justify-content: center;
+        position: relative;
     }
 
     .tls-brand {
@@ -1628,6 +1638,7 @@
         display: inline-flex;
         align-items: center;
         gap: 16px;
+        justify-content: center;
     }
 
     .site-nav .nav-link {
@@ -1645,24 +1656,26 @@
     }
 
     .tls-nav-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+
         display: none;
-        /* desktop hidden */
         align-items: center;
         justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, .14);
         background: rgba(255, 255, 255, .03);
         color: #fff;
         cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
     }
 
     /* Sayfa içeriği header altında kalmasın */
     #wrapper {
-        padding-top: 70px;
+        padding-top: 48px;
     }
 
     /* =========================
@@ -1670,7 +1683,10 @@
    ========================= */
     @media (max-width: 991px) {
         .site-nav {
-            display: none !important;
+            display: flex !important;
+            justify-content: flex-end;
+            width: 100%;
+            padding-right: 48px;
         }
 
         .tls-nav-toggle {
