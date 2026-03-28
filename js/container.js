@@ -22,7 +22,6 @@ const teamData = [
     name: "Sofia Kim",
     title: "CTO, QuantumLeap",
     image: "images/speakers/ugur-umutluoglu.jpg"
-    // linkedin yoksa ikon otomatik çıkmaz
   }
 ];
 
@@ -30,31 +29,81 @@ const scheduleData = [
   {
     day: "Salon 1",
     sessions: [
-      { time: "08:00", name: "Joshua Henry", sessionTitle: "Session: Opening Keynote – The State of AI 2025" },
-      { time: "12:00", name: "Leila Zhang", sessionTitle: "Session: Building Human-Centered AI Products" },
-      { time: "16:00", name: "Carlos Rivera", sessionTitle: "Session: AI Policy & Regulation – A Global Overview" }
+      {
+        time: "08:00",
+        name: [
+          { label: "Joshua Henry", img: "images/speakers/alper-hankendi.jpg" },
+          { label: "Joshua Henry", img: "images/speakers/alper-hankendi.jpg" },
+          { label: "Joshua Henry", img: "images/speakers/alper-hankendi.jpg" },
+        ],
+        sessionTitle: "Session: Opening Keynote – The State of AI 2025"
+      },
+      {
+        time: "12:00",
+        name: [
+          { label: "Leila Zhang", img: "images/speakers/emre-toptanci.jpg" }
+        ],
+        sessionTitle: "Session: Building Human-Centered AI Products"
+      },
+      {
+        time: "16:00",
+        name: [
+          { label: "Carlos Rivera", img: "images/speakers/lemi-orhan-ergin.jpg" }
+        ],
+        sessionTitle: "Session: AI Policy & Regulation – A Global Overview"
+      }
     ]
   },
   {
     day: "Salon 2",
     sessions: [
-      { time: "09:00", name: "Leila Zhang", sessionTitle: "Session: Ethical AI — From Theory to Practice" }
+      {
+        time: "09:00",
+        name: [
+          { label: "Leila Zhang", img: "images/speakers/emre-toptanci.jpg" }
+        ],
+        sessionTitle: "Session: Ethical AI — From Theory to Practice"
+      }
     ]
   },
   {
     day: "Salon 3",
     sessions: [
-      { time: "08:00", name: "Joshua Henry", sessionTitle: "Session: Opening Keynote – The State of AI 2025" },
-      { time: "12:00", name: "Leila Zhang", sessionTitle: "Session: Building Human-Centered AI Products" },
-      { time: "16:00", name: "Carlos Rivera", sessionTitle: "Session: AI Policy & Regulation – A Global Overview" }
+      {
+        time: "08:00",
+        name: [
+          { label: "Joshua Henry", img: "images/speakers/alper-hankendi.jpg" }
+        ],
+        sessionTitle: "Session: Opening Keynote – The State of AI 2025"
+      },
+      {
+        time: "12:00",
+        name: [
+          { label: "Leila Zhang", img: "images/speakers/emre-toptanci.jpg" }
+        ],
+        sessionTitle: "Session: Building Human-Centered AI Products"
+      },
+      {
+        time: "16:00",
+        name: [
+          { label: "Carlos Rivera", img: "images/speakers/lemi-orhan-ergin.jpg" }
+        ],
+        sessionTitle: "Session: AI Policy & Regulation – A Global Overview"
+      }
     ]
   },
   {
     day: "Salon 4",
     sessions: [
-      { time: "09:00", name: "Leila Zhang", sessionTitle: "Session: Ethical AI — From Theory to Practice" }
+      {
+        time: "09:00",
+        name: [
+          { label: "Leila Zhang", img: "images/speakers/emre-toptanci.jpg" }
+        ],
+        sessionTitle: "Session: Ethical AI — From Theory to Practice"
+      }
     ]
-  },
+  }
 ];
 
 const tickets = [
@@ -98,7 +147,7 @@ const sponsorData = [
       { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
       { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
       { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
-      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" },
+      { name: "Sponsor 1", logo: "images/logo-light/1.webp", url: "https://example.com" }
     ]
   },
   {
@@ -106,7 +155,7 @@ const sponsorData = [
     title: "Platinum Sponsors",
     items: [
       { name: "Sponsor 2", logo: "images/logo-light/2.webp", url: "https://example.com" },
-      { name: "Sponsor 3", logo: "images/logo-light/3.webp" },
+      { name: "Sponsor 3", logo: "images/logo-light/3.webp" }
     ]
   },
   {
@@ -117,7 +166,7 @@ const sponsorData = [
       { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
       { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
       { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
-      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" },
+      { name: "Sponsor 4", logo: "images/logo-light/4.webp", url: "https://example.com" }
     ]
   }
 ];
@@ -151,7 +200,10 @@ function makeId(input) {
 }
 
 function buildSessionId(dayLabel, session) {
-  const base = `${dayLabel}__${session.time}__${session.sessionTitle}__${session.name}`;
+  const nameStr = Array.isArray(session.name)
+    ? session.name.map(s => s.label).join("-")
+    : session.name;
+  const base = `${dayLabel}__${session.time}__${session.sessionTitle}__${nameStr}`;
   return makeId(base);
 }
 
@@ -232,12 +284,10 @@ function unlockBodyScroll() {
   }
 }
 
-
 /* ---------------------------
    My Schedule UI
 ---------------------------- */
 function ensureMyScheduleUI() {
-  // Floating Button
   let fab = document.getElementById("my-schedule-fab");
   if (!fab) {
     fab = document.createElement("div");
@@ -251,7 +301,6 @@ function ensureMyScheduleUI() {
     document.body.appendChild(fab);
   }
 
-  // Backdrop + Modal
   let backdrop = document.getElementById("my-schedule-backdrop");
   let modal = document.getElementById("my-schedule-modal");
 
@@ -275,13 +324,13 @@ function ensureMyScheduleUI() {
           <button class="ms-close" id="my-schedule-close-btn" type="button">✕</button>
         </div>
       </div>
-
       <div id="my-schedule-export-area">
         <div id="my-schedule-content" class="my-schedule-list"></div>
       </div>
     `;
     document.body.appendChild(modal);
   }
+
   backdrop.style.display = "none";
   modal.style.display = "none";
   unlockBodyScroll();
@@ -471,33 +520,47 @@ function triggerMyScheduleAttention() {
 function renderMyScheduleModalContent() {
   const content = document.getElementById("my-schedule-content");
   if (!content) return;
-
   const selected = getMySchedule();
-
   if (selected.length === 0) {
     content.innerHTML = `<div style="opacity:.85;">You haven't added any sessions yet.</div>`;
     updateMyScheduleFabVisibility();
     return;
   }
-
   const items = selected.slice().sort((a, b) => {
     const ta = String(a.time || "");
     const tb = String(b.time || "");
     const tcmp = ta.localeCompare(tb);
     if (tcmp !== 0) return tcmp;
-
     const da = String(a.day || "");
     const db = String(b.day || "");
     const dcmp = da.localeCompare(db);
     if (dcmp !== 0) return dcmp;
-
     return String(a.sessionTitle || "").localeCompare(String(b.sessionTitle || ""));
   });
 
   let html = "";
-
   items.forEach(item => {
     const timeWithRoom = `${item.time || ""} • ${item.day || ""}`.trim();
+
+    let speakerHTML = "";
+    if (item.speakers && item.speakers.length > 0) {
+      speakerHTML = item.speakers.map(sp => `
+        <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 20px; font-size: 13px;">
+          <img src="${sp.img}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
+          <span style="white-space:nowrap;">${sp.label}</span>
+        </span>
+      `).join("");
+    } else if (item.image) {
+      const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
+      speakerHTML = `
+        <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 20px; font-size: 13px;">
+          <img src="${item.image}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
+          <span style="white-space:nowrap;">${speakerNames}</span>
+        </span>`;
+    } else {
+      const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
+      speakerHTML = `<span style="font-size: 13px;">${speakerNames}</span>`;
+    }
 
     html += `
       <div class="my-schedule-item" data-session-id="${item.id}">
@@ -506,7 +569,9 @@ function renderMyScheduleModalContent() {
             <div class="time">${timeWithRoom}</div>
             <div class="session">${item.sessionTitle}</div>
           </div>
-          <div class="speaker">${item.name}</div>
+          <div class="speaker" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
+            ${speakerHTML}
+          </div>
         </div>
         <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
       </div>
@@ -523,7 +588,6 @@ function renderMyScheduleModalContent() {
       e.stopPropagation();
       const id = e.currentTarget.getAttribute("data-remove-id");
       if (!id) return;
-
       removeFromMySchedule(id);
       syncScheduleButtonsWithStorage();
       renderMyScheduleModalContent();
@@ -563,18 +627,15 @@ try {
       <div class="team-card">
         <div class="card-image">
           <img src="${member.image}" alt="${member.name}">
-          
           ${member.caption ? `
             <div class="caption-badge">
               ${member.caption}
             </div>
           ` : ``}
         </div>
-
         <div class="card-info">
           <h3>${member.name}</h3>
           <span>${member.title}</span>
-
           ${member.linkedin ? `
             <a class="linkedin" href="${member.linkedin}" target="_blank" rel="noopener">
               <i class="fab fa-linkedin-in"></i>
@@ -583,7 +644,6 @@ try {
         </div>
       </div>
     `;
-
     container.insertAdjacentHTML('beforeend', cardHTML);
   });
 
@@ -654,39 +714,56 @@ function renderSchedule() {
   if (!scheduleContainer) return;
 
   const isDesktop = isDesktopNow();
-
   let scheduleColumns = document.getElementById("schedule-columns");
+
   if (!scheduleColumns) {
     scheduleColumns = document.createElement("div");
     scheduleColumns.id = "schedule-columns";
     scheduleContainer.parentNode.insertBefore(scheduleColumns, scheduleContainer);
   }
 
-  clearScheduleRenders();
+  if (scheduleContainer.innerHTML === "" && scheduleColumns.innerHTML === "") {
+    clearScheduleRenders();
+  } else {
+    syncScheduleButtonsWithStorage();
+    return;
+  }
+
+  function renderSpeakers(nameArr) {
+    return nameArr.map(speaker => `
+      <span style="display:inline-flex; align-items:center; gap:5px; margin-right:6px;">
+        <img
+          src="${speaker.img}"
+          alt="${speaker.label}"
+          style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0;"
+          onerror="this.src='images/default-avatar.png'; this.onerror=null;" 
+        />
+        <span>${speaker.label}</span>
+      </span>
+    `).join("");
+  }
 
   function buildSessionHTML(day, session, sessionId) {
     const isAdded = isInMySchedule(sessionId);
+    const speakersData = encodeURIComponent(JSON.stringify(session.name));
 
     return `
-      <div class="schedule-session" data-session-wrap="${sessionId}">
+      <div class="schedule-session" data-session-wrap="${sessionId}" style="height: auto; min-height: 80px;">
         <div class="ss-time">${session.time}</div>
-
-        <div class="ss-right">
+        <div class="ss-right" style="height: auto; display: flex; flex-direction: column; justify-content: center;">
           <div>
             <h5 class="ss-title">${session.sessionTitle}</h5>
-            <p class="ss-name">${session.name}</p>
+            <div class="ss-name" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">${renderSpeakers(session.name)}</div>
           </div>
-
-          <div class="ss-actions">
+          <div class="ss-actions" style="margin-top: 10px;">
             <button
               class="session-add-btn ${isAdded ? "is-remove" : ""}"
               type="button"
               data-session-id="${sessionId}"
               data-day="${day.day}"
               data-time="${session.time}"
-              data-name="${session.name}"
+              data-speakers="${speakersData}"
               data-session-title="${session.sessionTitle}"
-              data-description="${String(session.description || "").replace(/"/g, "&quot;")}"
             >${isAdded ? "Remove" : "Add"}</button>
           </div>
         </div>
@@ -707,21 +784,15 @@ function renderSchedule() {
       });
       dayHTML += `</li>`;
       scheduleContainer.insertAdjacentHTML("beforeend", dayHTML);
-      return;
+    } else {
+      let colHTML = `<div class="schedule-col"><h3 class="schedule-col-title">${day.day}</h3>`;
+      day.sessions.forEach(session => {
+        const sessionId = buildSessionId(day.day, session);
+        colHTML += buildSessionHTML(day, session, sessionId);
+      });
+      colHTML += `</div>`;
+      scheduleColumns.insertAdjacentHTML("beforeend", colHTML);
     }
-
-    let colHTML = `
-      <div class="schedule-col">
-        <h3 class="schedule-col-title">${day.day}</h3>
-    `;
-
-    day.sessions.forEach(session => {
-      const sessionId = buildSessionId(day.day, session);
-      colHTML += buildSessionHTML(day, session, sessionId);
-    });
-
-    colHTML += `</div>`;
-    scheduleColumns.insertAdjacentHTML("beforeend", colHTML);
   });
 
   if (!isDesktop) {
@@ -729,49 +800,38 @@ function renderSchedule() {
     applyMobileTabActive(0);
   }
 
-  const addButtons = document.querySelectorAll(".session-add-btn[data-session-id]");
+  const addButtons = document.querySelectorAll(".session-add-btn");
   addButtons.forEach(btn => {
     if (btn.__bound) return;
-
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      e.stopPropagation();
-
       const b = e.currentTarget;
       const id = b.getAttribute("data-session-id");
-      if (!id) return;
 
       if (isInMySchedule(id)) {
         removeFromMySchedule(id);
-        syncScheduleButtonsWithStorage();
-        updateMyScheduleFabVisibility();
-        return;
+      } else {
+        const spData = b.getAttribute("data-speakers");
+        const parsedSpeakers = JSON.parse(decodeURIComponent(spData));
+
+        const item = {
+          id,
+          day: b.getAttribute("data-day"),
+          time: b.getAttribute("data-time"),
+          speakers: parsedSpeakers,
+          sessionTitle: b.getAttribute("data-session-title")
+        };
+        addToMySchedule(item);
       }
-
-      const item = {
-        id,
-        day: b.getAttribute("data-day") || "",
-        time: b.getAttribute("data-time") || "",
-        image: b.getAttribute("data-image") || "",
-        name: b.getAttribute("data-name") || "",
-        title: b.getAttribute("data-title") || "",
-        sessionTitle: b.getAttribute("data-session-title") || "",
-        description: b.getAttribute("data-description") || ""
-      };
-
-      addToMySchedule(item);
 
       syncScheduleButtonsWithStorage();
       updateMyScheduleFabVisibility();
-      triggerMyScheduleAttention();
+      if (!b.classList.contains("is-remove")) triggerMyScheduleAttention();
     });
-
     btn.__bound = true;
   });
 
-  ensureMyScheduleUI();
   updateMyScheduleFabVisibility();
-  syncScheduleButtonsWithStorage();
 }
 
 function initScheduleResponsiveRerender() {
@@ -792,9 +852,7 @@ function initScheduleResponsiveRerender() {
 try {
   renderSchedule();
   initScheduleResponsiveRerender();
-} catch (error) {
-
-}
+} catch (error) { }
 
 /* ---------------------------
    Tickets + Slider (varsa)
@@ -852,9 +910,7 @@ try {
     setInterval(changeSlide, 3000);
   }
 
-} catch (error) {
-
-}
+} catch (error) { }
 
 /* ---------------------------
    Sponsors render
@@ -874,8 +930,6 @@ try {
         </div>
       </div>
     ` + cats.map(cat => {
-      const tierLabel = String(cat.key || "").toUpperCase();
-
       const itemsHTML = cat.items.map(it => {
         const name = it?.name || "Sponsor";
         const logo = it?.logo || "";
@@ -912,8 +966,7 @@ try {
       `;
     }).join("");
   }
-} catch (error) {
-}
+} catch (error) { }
 
 (function initHeaderNav() {
   const header = document.getElementById("site-header");
@@ -987,7 +1040,6 @@ try {
   function updateActiveOnScroll() {
     const y = (window.scrollY || 0) + getHeaderOffset() + 6;
 
-    // en alttaysak son section'ı seç
     const nearBottom = (window.innerHeight + (window.scrollY || 0)) >= (document.documentElement.scrollHeight - 4);
     if (nearBottom) {
       const last = sections[sections.length - 1];
