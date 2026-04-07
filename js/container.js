@@ -331,9 +331,14 @@ function ensureMyScheduleUI() {
     document.body.appendChild(modal);
   }
 
-  backdrop.style.display = "none";
-  modal.style.display = "none";
-  unlockBodyScroll();
+  if (!backdrop.__initialized) {
+    backdrop.style.display = "none";
+    backdrop.__initialized = true;
+  }
+  if (!modal.__initialized) {
+    modal.style.display = "none";
+    modal.__initialized = true;
+  }
 
   function openModal() {
     renderMyScheduleModalContent();
@@ -523,7 +528,6 @@ function renderMyScheduleModalContent() {
   const selected = getMySchedule();
   if (selected.length === 0) {
     content.innerHTML = `<div style="opacity:.85;">You haven't added any sessions yet.</div>`;
-    updateMyScheduleFabVisibility();
     return;
   }
   const items = selected.slice().sort((a, b) => {
@@ -590,8 +594,18 @@ function renderMyScheduleModalContent() {
       if (!id) return;
       removeFromMySchedule(id);
       syncScheduleButtonsWithStorage();
-      renderMyScheduleModalContent();
-      updateMyScheduleFabVisibility();
+      const remaining = getMySchedule();
+      if (remaining.length === 0) {
+        const modalEl = document.getElementById("my-schedule-modal");
+        const backdropEl = document.getElementById("my-schedule-backdrop");
+        if (modalEl) modalEl.style.display = "none";
+        if (backdropEl) backdropEl.style.display = "none";
+        unlockBodyScroll();
+        updateMyScheduleFabVisibility();
+      } else {
+        renderMyScheduleModalContent();
+        updateMyScheduleFabVisibility();
+      }
     });
     btn.__bound = true;
   });
@@ -805,6 +819,7 @@ function renderSchedule() {
     if (btn.__bound) return;
     btn.addEventListener("click", (e) => {
       e.preventDefault();
+      e.stopPropagation();
       const b = e.currentTarget;
       const id = b.getAttribute("data-session-id");
 
