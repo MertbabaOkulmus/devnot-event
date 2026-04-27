@@ -542,44 +542,88 @@ function renderMyScheduleModalContent() {
     return String(a.sessionTitle || "").localeCompare(String(b.sessionTitle || ""));
   });
 
-  let html = "";
+  const timeColorPalette = [
+    "#5b8af5",
+    "#f59e3a",
+    "#3acf8f",
+    "#c97af5",
+    "#f56b6b",
+    "#4dcfea",
+    "#f5c842",
+    "#f57ab5",
+  ];
+  const timeColorMap = {};
+  let colorIdx = 0;
   items.forEach(item => {
-    const timeWithRoom = `${item.time || ""} • ${item.day || ""}`.trim();
-
-    let speakerHTML = "";
-    if (item.speakers && item.speakers.length > 0) {
-      speakerHTML = item.speakers.map(sp => `
-        <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 20px; font-size: 13px;">
-          <img src="${sp.img}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
-          <span style="white-space:nowrap;">${sp.label}</span>
-        </span>
-      `).join("");
-    } else if (item.image) {
-      const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
-      speakerHTML = `
-        <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 20px; font-size: 13px;">
-          <img src="${item.image}" style="width:24px; height:24px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
-          <span style="white-space:nowrap;">${speakerNames}</span>
-        </span>`;
-    } else {
-      const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
-      speakerHTML = `<span style="font-size: 13px;">${speakerNames}</span>`;
+    const t = String(item.time || "");
+    if (!(t in timeColorMap)) {
+      timeColorMap[t] = timeColorPalette[colorIdx % timeColorPalette.length];
+      colorIdx++;
     }
+  });
 
+  const groups = {};
+  const groupOrder = [];
+  items.forEach(item => {
+    const t = String(item.time || "");
+    if (!groups[t]) { groups[t] = []; groupOrder.push(t); }
+    groups[t].push(item);
+  });
+
+  let html = "";
+  groupOrder.forEach(time => {
+    const color = timeColorMap[time] || "rgba(255,255,255,.3)";
+    html += `<div class="ms-time-group">`;
     html += `
-      <div class="my-schedule-item" data-session-id="${item.id}">
-        <div class="meta">
-          <div class="line1">
-            <div class="time">${timeWithRoom}</div>
-            <div class="session">${item.sessionTitle}</div>
-          </div>
-          <div class="speaker" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
-            ${speakerHTML}
-          </div>
-        </div>
-        <button class="remove-btn" type="button" data-remove-id="${item.id}">Remove</button>
+      <div class="ms-time-group-header">
+        <div class="ms-time-group-dot" style="background:${color};"></div>
+        <div class="ms-time-group-time">${time}</div>
+        <div class="ms-time-group-line"></div>
       </div>
     `;
+
+    groups[time].forEach(item => {
+      let speakerHTML = "";
+      if (item.speakers && item.speakers.length > 0) {
+        speakerHTML = item.speakers.map(sp => `
+          <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 20px; font-size: 12px;">
+            <img src="${sp.img}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
+            <span style="white-space:nowrap;">${sp.label}</span>
+          </span>
+        `).join("");
+      } else if (item.image) {
+        const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
+        speakerHTML = `
+          <span style="display:inline-flex; align-items:center; gap:5px; background: rgba(255,255,255,0.05); padding: 3px 8px; border-radius: 20px; font-size: 12px;">
+            <img src="${item.image}" style="width:20px; height:20px; border-radius:50%; object-fit:cover;" onerror="this.style.display='none'" />
+            <span style="white-space:nowrap;">${speakerNames}</span>
+          </span>`;
+      } else {
+        const speakerNames = Array.isArray(item.name) ? item.name.join(", ") : item.name;
+        speakerHTML = `<span style="font-size: 12px; opacity:.8;">${speakerNames}</span>`;
+      }
+
+      const dayLabel = String(item.day || "");
+
+      html += `
+        <div class="my-schedule-item" data-session-id="${item.id}" style="--ms-bar-color:${color};">
+          <div class="ms-item-inner">
+            <div class="meta">
+              <div class="line1">
+                <div class="time" style="font-size:12px; opacity:.55; font-weight:700;">${dayLabel}</div>
+                <div class="session">${item.sessionTitle}</div>
+              </div>
+              <div class="speaker" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">
+                ${speakerHTML}
+              </div>
+            </div>
+            <button class="remove-btn" type="button" data-remove-id="${item.id}">✕</button>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
   });
 
   content.innerHTML = html;

@@ -1042,7 +1042,41 @@
     .my-schedule-list {
         display: flex;
         flex-direction: column;
+        gap: 0;
+    }
+
+    .ms-time-group {
+        margin-bottom: 16px;
+    }
+
+    .ms-time-group-header {
+        display: flex;
+        align-items: center;
         gap: 10px;
+        margin-bottom: 8px;
+        padding: 0 2px;
+    }
+
+    .ms-time-group-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--ms-bar-color, rgba(255,255,255,.4));
+        flex: 0 0 auto;
+    }
+
+    .ms-time-group-time {
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: .08em;
+        opacity: .6;
+        text-transform: uppercase;
+    }
+
+    .ms-time-group-line {
+        flex: 1;
+        height: 1px;
+        background: rgba(255,255,255,.07);
     }
 
     .my-schedule-day {
@@ -1066,13 +1100,34 @@
 
     .my-schedule-item {
         display: flex;
-        gap: 12px;
-        align-items: flex-start;
-        padding: 12px;
+        gap: 0;
+        align-items: stretch;
+        min-height: 72px;
         border-radius: 12px;
         border: 1px solid rgba(255, 255, 255, .10);
         background: rgba(255, 255, 255, .03);
         margin-bottom: 6px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .my-schedule-item::before {
+        content: "";
+        display: block;
+        flex: 0 0 4px;
+        width: 4px;
+        background: var(--ms-bar-color, rgba(255,255,255,.22));
+        border-radius: 0;
+        align-self: stretch;
+    }
+
+    .my-schedule-item .ms-item-inner {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px;
+        flex: 1 1 auto;
+        min-width: 0;
     }
 
     .my-schedule-item img {
@@ -1116,11 +1171,14 @@
 
     .my-schedule-item .remove-btn {
         flex: 0 0 auto;
-        border-radius: 10px;
-        padding: 8px 10px;
+        align-self: center;
+        border-radius: 8px;
+        padding: 5px 9px;
+        font-size: 12px;
         background: transparent;
         border: 1px solid rgba(255, 255, 255, .18);
-        color: #fff;
+        color: rgba(255,255,255,.75);
+        white-space: nowrap;
     }
 
     .my-schedule-item .remove-btn:hover {
@@ -1129,16 +1187,18 @@
 
     /* Schedule list Add button */
     .session-add-btn {
-        margin-top: 10px;
+        margin-top: 8px;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        border-radius: 10px;
-        padding: 6px;
+        gap: 6px;
+        border-radius: 8px;
+        padding: 4px 10px;
+        font-size: 12px;
         border: 1px solid rgba(255, 255, 255, .18);
         background: rgba(255, 255, 255, .04);
-        color: #fff;
+        color: rgba(255,255,255,.85);
         font-weight: 700;
+        line-height: 1.4;
     }
 
     .session-add-btn:hover {
